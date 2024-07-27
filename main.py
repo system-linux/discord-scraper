@@ -1,7 +1,5 @@
 from colorama import Fore
-import json
-import os
-import discord
+import json, os, discord, re
 
 
 from discord.ext import (
@@ -9,7 +7,9 @@ from discord.ext import (
     tasks
 )
 
-
+def check_token(token):
+    token_pattern = re.compile(r'[MN][A-Za-z\d]{23}\.[\w-]{6}\.[\w-]{27}')
+    return bool(token_pattern.fullmatch(token))
 
 client = discord.Client()
 client = commands.Bot(
@@ -34,6 +34,10 @@ def Init():
     if config.get('token') == "token-here":
         os.system('cls')
         print(f"\n\n{Fore.WHITE}[ {Fore.RED}E {Fore.WHITE}] {Fore.LIGHTBLACK_EX}You didnt put your token in the config.json file\n\n"+Fore.RESET)
+        exit()
+    elif not check_token(config.get('token')):
+        os.system('cls')
+        print(f"\n\n{Fore.WHITE}[ {Fore.RED}E {Fore.WHITE}] {Fore.LIGHTBLACK_EX}Invalid token! Check it.\n\n"+Fore.RESET)
         exit()
     else:
         token = config.get('token')
